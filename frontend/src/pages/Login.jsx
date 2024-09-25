@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     axios
-      .post(`${baseUrl}/api/v1/users/login`, { email, password })
+      .post(`${baseUrl}/api/v1/users/login`, { email, password }, { withCredentials: true } )
       .then((res) => {
         console.log("Login res: ", res.data.data);
         setError("");
