@@ -6,11 +6,16 @@ const app = express();
 // cors configuration
 app.use(
     cors({
-        origin: "https://crazzzy-tube-frontend.vercel.app",
-        credentials: true,
+        origin: "https://crazzzy-tube-frontend.vercel.app",  // Allow only your frontend's origin
+        credentials: true,  // Allow credentials (cookies, authorization headers)
+        methods: ["GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"],  // Specify allowed HTTP methods
+        allowedHeaders: ["Content-Type", "Authorization"],  // Specify allowed headers
     })
 );
-app.options("*", cors()); 
+
+// Enable preflight requests (OPTIONS) for all routes
+app.options("*", cors());
+
 
 // allowing json data
 app.use(express.json({ limit: "16kb" }));
