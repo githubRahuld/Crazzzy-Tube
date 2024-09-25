@@ -10,6 +10,7 @@ app.use(
         credentials: true,
     })
 );
+app.options("*", cors()); 
 
 // allowing json data
 app.use(express.json({ limit: "16kb" }));
