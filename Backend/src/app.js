@@ -14,8 +14,13 @@ app.use(
     })
 );
 
-// Enable preflight requests (OPTIONS) for all routes
-app.options("*", cors());
+app.options("*", cors({
+    origin: process.env.CORS_ORIGIN || "https://crazzzy-tube-frontend.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 
 
 // allowing json data
