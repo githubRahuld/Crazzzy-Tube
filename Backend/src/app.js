@@ -4,23 +4,18 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 // cors configuration
-app.use(
-    cors({
-        origin:process.env.CORS_ORIGIN ||
-            "https://crazzzy-tube-frontend.vercel.app",
-        credentials: true,  // Allow credentials (cookies, authorization headers)
-        methods: ["GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"],  // Specify allowed HTTP methods
-        allowedHeaders: ["Content-Type", "Authorization"],  // Specify allowed headers
-    })
-);
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || "https://crazzzy-tube-frontend.vercel.app",
+  credentials: true,  // Enable credentials (cookies, authorization headers)
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],  // Allowed HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"],  // Allowed headers
+};
 
-app.options("*", cors({
-    origin: process.env.CORS_ORIGIN || "https://crazzzy-tube-frontend.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// Apply CORS to all routes
+app.use(cors(corsOptions));
 
+// Ensure preflight (OPTIONS) requests also use the same CORS settings
+app.options("*", cors(corsOptions));
 
 
 // allowing json data
