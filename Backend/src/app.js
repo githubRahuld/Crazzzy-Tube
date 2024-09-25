@@ -6,7 +6,7 @@ const app = express();
 // cors configuration
 app.use(
     cors({
-        origin: process.env.CORS_ORIGIN,
+        origin: "https://crazzzy-tube-frontend.vercel.app",
         credentials: true,
     })
 );
