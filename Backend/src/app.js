@@ -5,10 +5,10 @@ const app = express();
 
 // cors configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "https://crazzzy-tube-frontend.vercel.app",
-  credentials: true,  // Enable credentials (cookies, authorization headers)
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],  // Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"],  // Allowed headers
+  origin: ["https://crazzzy-tube-frontend.vercel.app"],
+  credentials: true, 
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], 
+  allowedHeaders: ["Content-Type", "Authorization"], 
 };
 
 // Apply CORS to all routes
