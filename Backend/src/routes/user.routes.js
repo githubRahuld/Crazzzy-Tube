@@ -17,6 +17,12 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
+router.get("/home", async (req, res, next) => {
+    return res.status(200).json({
+        title: "Express Testing",
+        message: "The app is working properly!",
+    });
+});
 router.route("/register").post(
     upload.fields([
         {
