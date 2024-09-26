@@ -56,7 +56,7 @@ cd crazzzy-tube
     npm start/npm run dev
 
 ## Frontend Setup
--**Navigate to the frontend folder:**
+- **Navigate to the frontend folder:**
     cd frontend
 - **Install dependencies:**
     npm install
@@ -68,3 +68,5 @@ cd crazzzy-tube
 ### Running the Project
     Make sure the backend server is running on port 5000.
     The frontend should be running on port 5173 by default. Open the browser and go to http://localhost:5173.
+
+### A huge shoutout to Hitesh Choudhary(chai aur code) for being my mentor throughout this journey!
