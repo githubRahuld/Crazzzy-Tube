@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.js",
-      "use": "@vercel/node"
+      "src": "src/index.js",  // Path to your backend entry file
+      "use": "@vercel/node"   // Tells Vercel you're using Node.js
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "src/index.js"
+      "src": "/(.*)",
+      "dest": "src/index.js"  // Path to the entry point for all routes
     }
   ]
 }
