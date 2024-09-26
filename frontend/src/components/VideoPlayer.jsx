@@ -13,7 +13,12 @@ const VideoPlayer = ({ videoUrl, poster }) => {
       preload: "auto",
       poster: poster, // Thumbnail image for the video
       fluid: true, // Responsive video player
+      techOrder: ["html5"], // Use HTML5 video
+      responsive: true, // Make player responsive
     });
+
+    // Load the video URL
+    player.src({ src: videoUrl, type: "application/x-mpegURL" });
 
     // Dispose of the player when the component unmounts
     return () => {
