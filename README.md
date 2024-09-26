@@ -38,5 +38,33 @@ Before you begin, ensure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone
+git clone https://github.com/githubRahuld/Crazzzy-Tube.git
 cd crazzzy-tube
+
+## Backend Setup
+- **Navigate to the backend folder:**
+    cd backend
+- **Install dependencies:**
+    npm install
+- **Create a .env file and add the following environment variables:**
+    MONGO_URI=your_mongodb_connection_string
+    CLOUDINARY_NAME=your_cloudinary_name
+    CLOUDINARY_API_KEY=your_cloudinary_api_key
+    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+    JWT_SECRET=your_jwt_secret
+- **Start the backend server:**
+    npm start/npm run dev
+
+## Frontend Setup
+-**Navigate to the frontend folder:**
+    cd frontend
+- **Install dependencies:**
+    npm install
+- **Create a .env file for the frontend if necessary, for example:**
+    VITE_BACKEND_URL=http://localhost:5000/api
+- **Start the frontend server:**
+    npm run dev
+
+### Running the Project
+    Make sure the backend server is running on port 5000.
+    The frontend should be running on port 5173 by default. Open the browser and go to http://localhost:5173.
