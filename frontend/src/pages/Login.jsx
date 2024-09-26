@@ -68,7 +68,7 @@ const Login = () => {
   </div>
 ) : (
   <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-300 to-gray-100">
-    <div className="flex-grow flex items-center justify-center">
+    <div className="flex-grow flex items-center justify-center font-poppins">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full mt-6 mb-6 sm:mt-20 sm:mb-20 sm:p-12">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center">
           Sign In
