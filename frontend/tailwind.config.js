@@ -8,13 +8,7 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      // colors: {
-      //   // Define custom colors if needed
-      //   foreground: "#FFFFFF",
-      //   background: "#000000",
-      // },
-    },
+    extend: {},
     fontFamily: {
       cedarvilleCursive: ["Cedarville Cursive", "sans-serif"],
       dancing: ["Dancing Script", "sans-serif"],
