@@ -9,7 +9,7 @@ const VideoPlayer = ({ videoUrl, poster }) => {
     // Initialize the video.js player when the component mounts
     const player = videojs(videoRef.current, {
       controls: true,
-      autoplay: false,
+      autoplay: true,
       preload: "auto",
       poster: poster, // Thumbnail image for the video
       fluid: true, // Responsive video player
