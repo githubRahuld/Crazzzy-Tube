@@ -15,7 +15,6 @@ import fs from "fs";
 import util from "util";
 import { v4 as uuidv4 } from "uuid";
 import EventEmitter from "events";
-import { pipeline } from "stream";
 EventEmitter.defaultMaxListeners = 20; // Increase the limit
 
 const execPromise = util.promisify(exec);
