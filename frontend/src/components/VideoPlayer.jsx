@@ -15,6 +15,7 @@ const VideoPlayer = ({ videoUrl, poster }) => {
       fluid: true, // Responsive video player
       techOrder: ["html5"], // Use HTML5 video
       responsive: true, // Make player responsive
+      playsinline: true, // Ensures the video plays inline on iOS
     });
 
     // Load the video URL
