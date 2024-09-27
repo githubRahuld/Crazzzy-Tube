@@ -9,17 +9,11 @@ const VideoPlayer = ({ videoUrl, poster }) => {
     // Initialize the video.js player when the component mounts
     const player = videojs(videoRef.current, {
       controls: true,
-      autoplay: true,
+      autoplay: false,
       preload: "auto",
       poster: poster, // Thumbnail image for the video
       fluid: true, // Responsive video player
-      techOrder: ["html5"], // Use HTML5 video
-      responsive: true, // Make player responsive
-      playsinline: true, // Ensures the video plays inline on iOS
     });
-
-    // Load the video URL
-    player.src({ src: videoUrl, type: "application/x-mpegURL" });
 
     // Dispose of the player when the component unmounts
     return () => {
