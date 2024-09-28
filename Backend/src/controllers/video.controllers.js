@@ -57,7 +57,8 @@ const publishVideo = asyncHandler(async (req, res) => {
     const videoLocalPath = videoFile[0].path;
     const thumbnailLocalPath = thumbnailFile[0].path;
 
-    const videoDuration = await getVideoDuration(videoLocalPath);
+    // const videoDuration = await getVideoDuration(videoLocalPath);
+     const videoDuration = 10;
 
     const lessonId = uuidv4();
     const outputPath = path.join("public", "hls", lessonId); // Use the public folder
