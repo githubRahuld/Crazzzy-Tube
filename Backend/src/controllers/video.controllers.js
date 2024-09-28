@@ -41,6 +41,8 @@ const publishVideo = asyncHandler(async (req, res) => {
     }
 
     const videoFile = req.files?.videoFile;
+    console.log("Video file: ", videoFile);
+
     const thumbnailFile = req.files?.thumbnail;
 
     if (!videoFile || !videoFile[0]?.path) {
