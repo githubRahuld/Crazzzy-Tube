@@ -21,6 +21,7 @@ const execPromise = util.promisify(exec);
 
 // Function to get video duration using ffprobe
 const getVideoDuration = (videoPath) => {
+    console.log("videoPath: ",videoPath)
     return new Promise((resolve, reject) => {
         ffmpeg.ffprobe(videoPath, (err, metadata) => {
             if (err) {
