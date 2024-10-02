@@ -41,9 +41,16 @@ const publishVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Thumbnail file is required");
     }
 
+    
     try {
         // Generate a unique ID for the video
         const lessonId = uuidv4();
+
+         // Send response to the client immediately to prevent timeout
+        res.status(202).json({
+            status: 202,
+            message: "Video upload in progress. You will be notified once it's done."
+        });
 
         // Upload video to Cloudinary with HLS processing
         const videoUpload = await cloudinary.uploader.upload(
