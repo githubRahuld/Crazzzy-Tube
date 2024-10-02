@@ -49,17 +49,14 @@ const VideoCard = ({ video }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const username = video.owner?.username || video.channel?.username;
-  const avatar = video.owner?.avatar || video.channel?.avatar;
+  const username = video?.owner?.username || video?.channel?.username;
+  const avatar = video?.owner?.avatar || video?.channel?.avatar;
 
   const userData = useSelector((state) => state.auth.user);
 
-  console.log(userData.user._id);
-  console.log(video.channel);
-
   // Check if current route is dashboard and the user is the owner
   const isDashboardPage = location.pathname.startsWith("/users/dashboard");
-  const isOwner = userData && userData.user._id === video.channel?._id;
+  const isOwner = userData && userData.user._id === video?.channel?._id;
 
   const handleClick = () => {
     navigate(`/videos/${video._id}`);
@@ -115,14 +112,14 @@ const VideoCard = ({ video }) => {
           <div className="relative">
             {/* Video Thumbnail */}
             <img
-              src={video.thumbnail}
-              alt={video.title}
+              src={video?.thumbnail}
+              alt={video?.title}
               onClick={handleClick}
               className="w-full h-48 object-cover"
             />
             {/* Video Duration */}
             <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1 rounded-sm">
-              {formatDuration(video.duration)}
+              {formatDuration(video?.duration)}
             </span>
 
             {/* 3-dot menu button */}
@@ -165,7 +162,7 @@ const VideoCard = ({ video }) => {
             <div className="flex items-start flex-col">
               {/* Video Title */}
               <h3 className="font-bold leading-tight text-gray-900 text-lg">
-                {video.title}
+                {video?.title}
               </h3>
 
               {/* Channel Name */}
@@ -173,7 +170,7 @@ const VideoCard = ({ video }) => {
 
               {/* Views and Timestamp */}
               <p className="text-xs text-gray-400">
-                {video.views} views • {getRelativeTime(video.createdAt)}
+                {video?.views} views • {getRelativeTime(video?.createdAt)}
               </p>
             </div>
           </div>
