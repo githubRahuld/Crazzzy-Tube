@@ -14,6 +14,7 @@ import path from "path";
 import fs from "fs";
 import util from "util";
 import { v4 as uuidv4 } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
 import EventEmitter from "events";
 EventEmitter.defaultMaxListeners = 20; // Increase the limit
 
@@ -38,120 +39,84 @@ const getVideoDuration = (videoPath) => {
 
 const publishVideo = asyncHandler(async (req, res) => {
     const { title, description } = req.body;
+
+    // Validate request body
     if (!title || !description) {
         throw new ApiError(404, "Title and Description are required");
     }
 
     const videoFile = req.files?.videoFile;
-    console.log("Video file: ", videoFile);
-
     const thumbnailFile = req.files?.thumbnail;
 
+    // Validate video file
     if (!videoFile || !videoFile[0]?.path) {
         throw new ApiError(400, "Video file is required");
     }
 
+    // Validate thumbnail file
     if (!thumbnailFile || !thumbnailFile[0]?.path) {
         throw new ApiError(400, "Thumbnail file is required");
     }
 
-    const videoLocalPath = videoFile[0].path;
-    console.log("videoLocalPath", videoLocalPath);
+    try {
+        // Generate a unique ID for the video
+        const lessonId = uuidv4();
 
-    const thumbnailLocalPath = thumbnailFile[0].path;
+        // Upload video to Cloudinary with HLS processing
+        const videoUpload = await cloudinary.uploader.upload(
+            videoFile[0].path,
+            {
+                resource_type: "video",
+                public_id: `videos/${lessonId}`, // Store video with a unique ID
+                chunk_size: 6000000, // 6MB chunk size to handle large videos
+                eager: [
+                    { streaming_profile: "hd", format: "m3u8" }, // HLS format with HD profile
+                ],
+            }
+        );
 
-    const videoDuration = await getVideoDuration(videoLocalPath);
+        // Get the HLS .m3u8 URL from Cloudinary
+        const m3u8Url = videoUpload.eager.find(
+            (e) => e.format === "m3u8"
+        ).secure_url;
 
-    const lessonId = uuidv4();
-    const outputPath = path.join("public", "hls", lessonId); // Use the public folder
-    const hlsPath = path.join(outputPath, "index.m3u8");
-    console.log("HLS Path:", hlsPath);
+        // Upload thumbnail to Cloudinary
+        const thumbnailUpload = await cloudinary.uploader.upload(
+            thumbnailFile[0].path,
+            {
+                public_id: `thumbnails/${lessonId}`, // Store thumbnail with a unique ID
+            }
+        );
 
-    if (!fs.existsSync(outputPath)) {
-        fs.mkdirSync(outputPath, { recursive: true });
-    }
-
-    // ffmpeg command
-    const ffmpegCommand = `ffmpeg -i ${videoLocalPath} -codec:v libx264 -codec:a aac -hls_time 10 -hls_playlist_type vod -hls_segment_filename "${path.join(
-        outputPath,
-        "segment%03d.ts"
-    )}" -start_number 0 ${hlsPath}`;
-
-    // Execute ffmpeg command
-    exec(ffmpegCommand, async (error, stdout, stderr) => {
-        if (error) {
-            console.log(`Exec error: ${error}`);
-            return res
-                .status(500)
-                .json({ message: "Error processing video with FFmpeg" });
-        }
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
-
-        // Upload HLS files to Cloudinary
-        const hlsFiles = fs
-            .readdirSync(outputPath)
-            .filter((file) => file.endsWith(".m3u8") || file.endsWith(".ts"));
-        const hlsUploadPromises = hlsFiles.map((file) => {
-            return uploadOnCloudinary(path.join(outputPath, file));
+        // Create the video entry in the database
+        const videoData = await Video.create({
+            title,
+            description,
+            videoFile: m3u8Url, // HLS playlist URL
+            thumbnail: thumbnailUpload.secure_url, // Thumbnail URL
+            duration: videoUpload.duration, // Use duration from Cloudinary
+            views: 0,
+            isPublished: true,
+            owner: req.user._id, // Assuming user information is in the request
         });
 
-        try {
-            const uploadedHLS = await Promise.all(hlsUploadPromises);
-            console.log("Uploaded HLS files:", uploadedHLS); // Log uploaded HLS files for debugging
-
-            // Filter out null values and find the .m3u8 URL
-            const m3u8File = uploadedHLS.find(
-                (file) => file && file.playback_url
-            );
-            const m3u8Url = m3u8File?.playback_url;
-
-            if (!m3u8Url) {
-                throw new ApiError(401, "HLS upload failed!");
-            }
-
-            const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
-
-            if (!thumbnail?.url) {
-                throw new ApiError(401, "Thumbnail upload failed!");
-            }
-
-            const videoData = await Video.create({
-                title,
-                description,
-                videoFile: m3u8Url, // Use the HLS .m3u8 URL
-                thumbnail: thumbnail.url,
-                duration: videoDuration,
-                views: 0,
-                isPublished: true,
-                owner: req.user._id,
-            });
-
-            if (!videoData) {
-                throw new ApiError(
-                    401,
-                    "Something went wrong with video upload"
-                );
-            }
-
-            console.log("Video published");
-
-            return res
-                .status(200)
-                .json(
-                    new ApiResponse(
-                        200,
-                        videoData,
-                        "Video published successfully"
-                    )
-                );
-        } catch (uploadError) {
-            console.error("Upload error:", uploadError);
-            return res
-                .status(500)
-                .json({ message: "Error uploading HLS files or thumbnail" });
+        if (!videoData) {
+            throw new ApiError(401, "Something went wrong with video upload");
         }
-    });
+
+        console.log("Video published successfully");
+
+        return res.status(200).json({
+            status: 200,
+            data: videoData,
+            message: "Video published successfully",
+        });
+    } catch (error) {
+        console.error("Upload error:", error);
+        return res
+            .status(500)
+            .json({ message: "Error uploading video or thumbnail" });
+    }
 });
 
 const getAllVideos = asyncHandler(async (req, res) => {
