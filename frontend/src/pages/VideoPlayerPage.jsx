@@ -9,6 +9,7 @@ import { FcLike } from "react-icons/fc";
 import { Button } from "@nextui-org/react";
 import { Comment, Loading } from "../components";
 import { Link } from "react-router-dom";
+import VideoDescription from "../components/VideoDescription";
 
 const VideoPlayerPage = () => {
   const { id } = useParams();
@@ -340,14 +341,7 @@ const VideoPlayerPage = () => {
             </div>
           </div>
           {/* description  */}
-          <div className="mt-4 border-t border-gray-300 flex items-start pt-4">
-            <p
-              className="text-gray-700 text-lg font-light leading-relaxed tracking-wide"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              {videoData.description}
-            </p>
-          </div>
+         <VideoDescription videoData={videoData} />
 
           {/* Comment Section */}
           <div className="mt-8">
