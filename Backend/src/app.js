@@ -30,6 +30,15 @@ app.use(express.static("public"));
 // to access cookies from users browser using server
 app.use(cookieParser());
 
+//for timeout
+app.use((req, res, next) => {
+    res.setTimeout(300000, () => {
+        console.log('Request has timed out.');
+        res.status(504).send('Request timed out');
+    });
+    next();
+});
+
 //import routes
 import userRouter from "./routes/user.routes.js";
 import videoRouter from "./routes/video.routes.js";
