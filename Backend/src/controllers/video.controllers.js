@@ -20,23 +20,6 @@ EventEmitter.defaultMaxListeners = 20; // Increase the limit
 
 const execPromise = util.promisify(exec);
 
-// Function to get video duration using ffprobe
-const getVideoDuration = (videoPath) => {
-    console.log("videoPath: ",videoPath)
-    return new Promise((resolve, reject) => {
-        ffmpeg.ffprobe(videoPath, (err, metadata) => {
-            if (err) {
-                return reject(
-                    new ApiError(400, "Could not retrieve video metadata")
-                );
-            }
-            const duration = metadata.format.duration; // Duration in seconds
-            resolve(duration);
-        });
-    });
-};
-
-
 const publishVideo = asyncHandler(async (req, res) => {
     const { title, description } = req.body;
 
@@ -76,7 +59,7 @@ const publishVideo = asyncHandler(async (req, res) => {
         );
 
         // Get the HLS .m3u8 URL from Cloudinary
-        const m3u8Url = videoUpload.eager.find(
+        const m3u8Url = await videoUpload.eager.find(
             (e) => e.format === "m3u8"
         ).secure_url;
 
