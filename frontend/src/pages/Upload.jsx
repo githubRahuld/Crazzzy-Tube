@@ -78,15 +78,18 @@ const Upload = () => {
     <div className="flex justify-center items-center bg-gray-100 min-h-screen">
        
       {loading ? (
+       <div>
         <Spinner
           label="Uploading..."
           color="warning"
           className="text-yellow-400"
         />
+       {uploadMessage && <p>{uploadMessage}</p>}
+       </div>
       ) : (
         <div className="w-full max-w-2xl bg-white shadow-lg p-6 rounded-lg mt-4 sm:px-40">
            {/* Display the upload message */}
-          {uploadMessage && <p>{uploadMessage}</p>}
+         
           {error && <div className="text-red-500 bg-slate-800">{error}</div>}
           <form onSubmit={handleUpload} encType="multipart/form-data">
             <h1 className="text-2xl font-bold mb-4">Upload Video</h1>
