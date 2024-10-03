@@ -48,7 +48,7 @@ const Upload = () => {
         }
 
          if (response.status === 202) {
-        setUploadMessage(response.data.message); // Set the message to display on the UI
+        setUploadMessage(res.data.message); // Set the message to display on the UI
         }
         // Redirect to home page after 5 seconds
         const timer = setTimeout(() => {
