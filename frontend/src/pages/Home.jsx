@@ -6,7 +6,7 @@ import { Skeleten, VideoCard, Loading } from "../components";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../store/authSlice";
 import { useOutletContext } from "react-router-dom"; // To access context from App
-import Upload from "./Upload";
+
 
 function Home() {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -16,12 +16,7 @@ function Home() {
   const [videosData, setVideosData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { searchTerm } = useOutletContext();
-  const [uploadMessage, setUploadMessage] = useState("");
-
-  // Function to handle message received from the child
-  const handleUploadMessage = (message) => {
-    setUploadMessage(message); // Update state with the message from child
-  };
+  
 
 
   useEffect(() => {
@@ -65,13 +60,6 @@ function Home() {
         <Loading />
       ) : (
         <div className="mt-4">
-           <Upload onUploadMessage={handleUploadMessage} />
-          {uploadMessage && (
-            <h2 className="text-green-500 font-bold font-caveat">
-              {uploadMessage}
-            </h2>
-          )}
-
           {error && <h1>{error}</h1>}
           {filteredVideos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
