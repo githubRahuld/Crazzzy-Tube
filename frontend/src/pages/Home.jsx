@@ -6,6 +6,7 @@ import { Skeleten, VideoCard, Loading } from "../components";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../store/authSlice";
 import { useOutletContext } from "react-router-dom"; // To access context from App
+import Upload from "./Upload";
 
 function Home() {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
