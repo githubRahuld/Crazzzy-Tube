@@ -25,7 +25,7 @@ const publishVideo = asyncHandler(async (req, res) => {
 
     // Validate request body
     if (!title || !description) {
-        throw new ApiError(404, "Title and Description are required");
+        throw new ApiError(400, "Title and Description are required");
     }
 
     const videoFile = req.files?.videoFile;
@@ -41,68 +41,56 @@ const publishVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Thumbnail file is required");
     }
 
+    // Generate a unique ID for the video
+    const lessonId = uuidv4();
+
+    // Send an immediate response to the client
+    res.status(202).json({
+        status: 202,
+        message: "Video upload in progress. You will be notified once it's done."
+    });
+
+    // Process the video upload and thumbnail asynchronously
+    processVideoUpload(title, description, videoFile[0].path, thumbnailFile[0].path, lessonId, req.user._id);
+});
+
+const processVideoUpload = async (title, description, videoPath, thumbnailPath, lessonId, userId) => {
     try {
-        // Generate a unique ID for the video
-        const lessonId = uuidv4();
-
         // Upload video to Cloudinary with HLS processing
-        const videoUpload = await cloudinary.uploader.upload(
-            videoFile[0].path,
-            {
-                resource_type: "video",
-                public_id: `videos/${lessonId}`, // Store video with a unique ID
-                chunk_size: 6000000, // 6MB chunk size to handle large videos
-                eager: [
-                    { streaming_profile: "hd", format: "m3u8" }, // HLS format with HD profile
-                ],
-            }
-        );
+        const videoUpload = await cloudinary.uploader.upload(videoPath, {
+            resource_type: "video",
+            public_id: `videos/${lessonId}`,
+            chunk_size: 6000000,
+            eager: [{ streaming_profile: "hd", format: "m3u8" }],
+        });
 
-        // Get the HLS .m3u8 URL from Cloudinary
-        const m3u8Url = videoUpload.eager.find(
-            (e) => e.format === "m3u8"
-        ).secure_url;
-
-        // console.log("m3u8Url: ", m3u8Url);
+        const m3u8Url = videoUpload.eager.find(e => e.format === "m3u8").secure_url;
 
         // Upload thumbnail to Cloudinary
-        const thumbnailUpload = await uploadOnCloudinary(
-            thumbnailFile[0].path,
-            {
-                public_id: `thumbnails/${lessonId}`, // Store thumbnail with a unique ID
-            }
-        );
+        const thumbnailUpload = await cloudinary.uploader.upload(thumbnailPath, {
+            public_id: `thumbnails/${lessonId}`,
+        });
 
         // Create the video entry in the database
         const videoData = await Video.create({
             title,
             description,
-            videoFile: m3u8Url, // HLS playlist URL
-            thumbnail: thumbnailUpload.secure_url, // Thumbnail URL
-            duration: videoUpload.duration, // Use duration from Cloudinary
+            videoFile: m3u8Url,
+            thumbnail: thumbnailUpload.secure_url,
+            duration: videoUpload.duration,
             views: 0,
             isPublished: true,
-            owner: req.user._id, // Assuming user information is in the request
+            owner: userId,
         });
 
-        if (!videoData) {
-            throw new ApiError(401, "Something went wrong with video upload");
-        }
+        console.log("Video published successfully", videoData);
 
-        console.log("Video published successfully");
-
-        return res.status(200).json({
-            status: 200,
-            data: videoData,
-            message: "Video published successfully",
-        });
+        // Optionally, you can send a notification email or a message to the user here.
     } catch (error) {
-        console.error("Upload error:", error);
-        return res
-            .status(500)
-            .json({ message: "Error uploading video or thumbnail" });
+        console.error("Error processing video:", error);
+        // Handle error appropriately (e.g., send an email notification about the failure)
     }
-});
+};
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const {
