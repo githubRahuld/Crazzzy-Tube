@@ -47,16 +47,16 @@ const Upload = () => {
           alert("Please upload both video and thumbnail!");
         }
 
-        if (response.status === 202) {
+         if (response.status === 202) {
         setUploadMessage(response.data.message); // Set the message to display on the UI
         }
-        navigate("/users/home");
+        // Redirect to home page after 5 seconds
         const timer = setTimeout(() => {
           navigate("/users/home");
         }, 5000);
-
+      
         // Cleanup the timer when the component unmounts
-        clearTimeout(timer);
+        return () => clearTimeout(timer);
       .catch((err) => {
         setLoading(false);
         console.log(err);
