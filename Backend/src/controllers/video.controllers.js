@@ -51,6 +51,7 @@ const publishVideo = asyncHandler(async (req, res) => {
     });
 
     // Process the video upload and thumbnail asynchronously
+    console.log("come here");
     processVideoUpload(title, description, videoFile[0].path, thumbnailFile[0].path, lessonId, req.user._id);
 });
 
@@ -63,9 +64,12 @@ const processVideoUpload = async (title, description, videoPath, thumbnailPath, 
             chunk_size: 6000000,
             eager: [{ streaming_profile: "hd", format: "m3u8" }],
         });
+        console.log("videoUpload: ",videoUpload);
 
         const m3u8Url = videoUpload.eager.find(e => e.format === "m3u8").secure_url;
 
+        console.log("m3u8Url: ",m3u8Url);
+        
         // Upload thumbnail to Cloudinary
         const thumbnailUpload = await cloudinary.uploader.upload(thumbnailPath, {
             public_id: `thumbnails/${lessonId}`,
