@@ -5,19 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { Spinner } from "@nextui-org/react";
 import Cookies from "js-cookie";
 
-const Upload = () => {
+const Upload = ({ onUploadMessage }) => {
   const [videoFile, setVideoFile] = useState();
   const [thumbnail, setThumbnail] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
-   const [uploadMessage, setUploadMessage] = useState("");
-
-  // Function to handle message received from the child
-  const handleUploadMessage = (message) => {
-    setUploadMessage(message); // Update state with the message from child
-  };
+ 
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
@@ -51,6 +46,9 @@ const Upload = () => {
         } else {
           alert("Please upload both video and thumbnail!");
         }
+        if (response.status === 202) {
+          onUploadMessage(response.data.message);
+        }
         navigate("/users/home");
       })
       .catch((err) => {
@@ -70,12 +68,7 @@ const Upload = () => {
 
   return (
     <div className="flex justify-center items-center bg-gray-100 min-h-screen">
-       <Upload onUploadMessage={handleUploadMessage} />
-          {uploadMessage && (
-            <h2 className="text-green-500 font-bold font-caveat">
-              {uploadMessage}
-            </h2>
-          )}
+       
       {loading ? (
         <Spinner
           label="Uploading..."
