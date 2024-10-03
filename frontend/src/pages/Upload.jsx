@@ -22,55 +22,56 @@ const Upload = () => {
   // console.log("token: ", token);
 
   const handleUpload = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    const formData = new FormData();
-    formData.append("videoFile", videoFile);
-    formData.append("thumbnail", thumbnail);
-    formData.append("title", title);
-    formData.append("description", description);
+  const formData = new FormData();
+  formData.append("videoFile", videoFile);
+  formData.append("thumbnail", thumbnail);
+  formData.append("title", title);
+  formData.append("description", description);
 
-    axios
-      .post(`${baseUrl}/api/v1/videos/upload-video`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-      })
-      .then((res) => {
-        if (videoFile && thumbnail) {
-          console.log("Video uploaded:", videoFile);
-          console.log("Thumbnail uploaded:", thumbnail);
-          console.log("res: ", res);
-        } else {
-          alert("Please upload both video and thumbnail!");
-        }
+  axios
+    .post(`${baseUrl}/api/v1/videos/upload-video`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+      },
+    })
+    .then((res) => {
+      if (videoFile && thumbnail) {
+        console.log("Video uploaded:", videoFile);
+        console.log("Thumbnail uploaded:", thumbnail);
+        console.log("res: ", res);
+      } else {
+        alert("Please upload both video and thumbnail!");
+        return; // exit if video or thumbnail isn't uploaded
+      }
 
-         if (response.status === 202) {
-        setUploadMessage(res.data.message); // Set the message to display on the UI
-        }
-        // Redirect to home page after 5 seconds
-        const timer = setTimeout(() => {
-          navigate("/users/home");
-        }, 5000);
-      
-        // Cleanup the timer when the component unmounts
-        return () => clearTimeout(timer);
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
+      if (res.status === 202) {  // Corrected to 'res'
+        setUploadMessage(res.data.message); // Set message for UI
+      }
 
-        // Catching the error response
-        if (err.response && err.response.statusText) {
-          // Extract the custom message from the ApiError
-          setError(err.response.statusText || "An error occurred");
-        } else {
-          // Fallback error message
-          setError("An unexpected error occurred");
-        }
-      });
-  };
+      // Redirect to home page after 5 seconds
+      const timer = setTimeout(() => {
+        navigate("/users/home");
+      }, 5000);
+
+      // Cleanup the timer when the component unmounts
+      return () => clearTimeout(timer);
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+
+      // Catching the error response
+      if (err.response && err.response.statusText) {
+        setError(err.response.statusText || "An error occurred");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    });
+};
 
   return (
     <div className="flex justify-center items-center bg-gray-100 min-h-screen">
