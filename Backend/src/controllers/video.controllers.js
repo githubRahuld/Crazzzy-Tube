@@ -45,35 +45,32 @@ const publishVideo = asyncHandler(async (req, res) => {
         // Generate a unique ID for the video
         const lessonId = uuidv4();
 
-        // Send response to the client immediately to prevent timeout
-        res.status(202).json({
-            status: 202,
-            message: "Video upload in progress. You will be notified once it's done.",
-        });
-
-        // Transcode the video to HLS format using FFmpeg
-        const transcodedFilePath = `/tmp/${lessonId}.m3u8`;
-        await execPromise(
-            `ffmpeg -i ${videoFile[0].path} -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls ${transcodedFilePath}`
+        // Upload video to Cloudinary with HLS processing
+        const videoUpload = await cloudinary.uploader.upload(
+            videoFile[0].path,
+            {
+                resource_type: "video",
+                public_id: `videos/${lessonId}`, // Store video with a unique ID
+                chunk_size: 6000000, // 6MB chunk size to handle large videos
+                eager: [
+                    { streaming_profile: "hd", format: "m3u8" }, // HLS format with HD profile
+                ],
+            }
         );
 
-        // Upload video to Cloudinary
-        const videoUpload = await cloudinary.uploader.upload(transcodedFilePath, {
-            resource_type: "video",
-            public_id: `videos/${lessonId}`,
-            chunk_size: 6000000, // 6MB chunk size to handle large videos
-            eager: [
-                { streaming_profile: "hd", format: "m3u8" },
-            ],
-        });
-
         // Get the HLS .m3u8 URL from Cloudinary
-        const m3u8Url = videoUpload.eager.find((e) => e.format === "m3u8").secure_url;
+        const m3u8Url = videoUpload.eager.find(
+            (e) => e.format === "m3u8"
+        ).secure_url;
+
+        // console.log("m3u8Url: ", m3u8Url);
 
         // Upload thumbnail to Cloudinary
-        const thumbnailUpload = await cloudinary.uploader.upload(
+        const thumbnailUpload = await uploadOnCloudinary(
             thumbnailFile[0].path,
-            { public_id: `thumbnails/${lessonId}` }
+            {
+                public_id: `thumbnails/${lessonId}`, // Store thumbnail with a unique ID
+            }
         );
 
         // Create the video entry in the database
@@ -81,11 +78,11 @@ const publishVideo = asyncHandler(async (req, res) => {
             title,
             description,
             videoFile: m3u8Url, // HLS playlist URL
-            thumbnail: thumbnailUpload.secure_url,
+            thumbnail: thumbnailUpload.secure_url, // Thumbnail URL
             duration: videoUpload.duration, // Use duration from Cloudinary
             views: 0,
             isPublished: true,
-            owner: req.user._id,
+            owner: req.user._id, // Assuming user information is in the request
         });
 
         if (!videoData) {
@@ -99,7 +96,6 @@ const publishVideo = asyncHandler(async (req, res) => {
             data: videoData,
             message: "Video published successfully",
         });
-
     } catch (error) {
         console.error("Upload error:", error);
         return res
@@ -107,7 +103,6 @@ const publishVideo = asyncHandler(async (req, res) => {
             .json({ message: "Error uploading video or thumbnail" });
     }
 });
-
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const {
