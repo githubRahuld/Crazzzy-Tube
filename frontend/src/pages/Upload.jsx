@@ -12,6 +12,7 @@ const Upload = () => {
   const [description, setDescription] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
+  const [uploadMessage, setUploadMessage] = useState("");
  
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
