@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Spinner } from "@nextui-org/react";
 import Cookies from "js-cookie";
 
-const Upload = ({ onUploadMessage }) => {
+const Upload = () => {
   const [videoFile, setVideoFile] = useState();
   const [thumbnail, setThumbnail] = useState();
   const [title, setTitle] = useState();
@@ -46,11 +46,17 @@ const Upload = ({ onUploadMessage }) => {
         } else {
           alert("Please upload both video and thumbnail!");
         }
+
         if (response.status === 202) {
-          onUploadMessage(response.data.message);
+        setUploadMessage(response.data.message); // Set the message to display on the UI
         }
         navigate("/users/home");
-      })
+        const timer = setTimeout(() => {
+          navigate("/users/home");
+        }, 5000);
+
+        // Cleanup the timer when the component unmounts
+        clearTimeout(timer);
       .catch((err) => {
         setLoading(false);
         console.log(err);
@@ -77,6 +83,8 @@ const Upload = ({ onUploadMessage }) => {
         />
       ) : (
         <div className="w-full max-w-2xl bg-white shadow-lg p-6 rounded-lg mt-4 sm:px-40">
+           {/* Display the upload message */}
+          {uploadMessage && <p>{uploadMessage}</p>}
           {error && <div className="text-red-500 bg-slate-800">{error}</div>}
           <form onSubmit={handleUpload} encType="multipart/form-data">
             <h1 className="text-2xl font-bold mb-4">Upload Video</h1>
