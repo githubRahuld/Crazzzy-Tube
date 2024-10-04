@@ -479,8 +479,8 @@ function Dashboard() {
             )}
              {tabSelected === "WatchHistory" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {watchHistory.length > 0 ? (
-                  watchHistory.map((video) => (
+                {WatchHistory.length > 0 ? (
+                  WatchHistory.map((video) => (
                     <div key={video._id} className="bg-white p-4 rounded-lg">
                       <VideoCard video={video} />
                     </div>
