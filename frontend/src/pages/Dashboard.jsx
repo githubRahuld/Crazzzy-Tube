@@ -31,6 +31,7 @@ function Dashboard() {
   const [videos, setVideos] = useState([]);
   const [tabSelected, setTabSelected] = useState("videos");
   const [playlists, setPlaylists] = useState([]);
+  const [watchHistory, setWatchHistory] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [playlistDescription, setPlaylistDescription] = useState("");
@@ -284,6 +285,28 @@ function Dashboard() {
     handleCloseVideoModal();
   };
 
+   //watch history
+  useEffect(() => {
+    const handleWatchHistory = async () => {
+      setLoading(true);
+      await axios
+        .get(`${baseUrl}/api/v1/users/watch-history`, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("accessToken")}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.data);
+          setWatchHistory(res.data.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log("error while fetching user Dashboard : ", err);
+        });
+    };
+    handleWatchHistory();
+  }, []);
+
   return (
     <div className="relative">
       {/* Main Content Section */}
@@ -357,6 +380,7 @@ function Dashboard() {
           >
             <Tab key="videos" title="Videos" />
             <Tab key="playlist" title="Playlist" />
+             <Tab key="WatchHistory" title="watch History" />
           </Tabs>
         </div>
 
@@ -451,6 +475,19 @@ function Dashboard() {
                     <p>No playlists created yet.</p>
                   )}
                 </div>
+              </div>
+            )}
+             {tabSelected === "WatchHistory" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {watchHistory.length > 0 ? (
+                  watchHistory.map((video) => (
+                    <div key={video._id} className="bg-white p-4 rounded-lg">
+                      <VideoCard video={video} />
+                    </div>
+                  ))
+                ) : (
+                  <p>No videos in watched history yet.</p>
+                )}
               </div>
             )}
           </div>
