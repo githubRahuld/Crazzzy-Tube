@@ -285,8 +285,7 @@ function Dashboard() {
     handleCloseVideoModal();
   };
 
-
- //watch history
+  //watch history
   useEffect(() => {
     const timer = setTimeout(() => {
       const handleWatchHistory = async () => {
@@ -306,11 +305,11 @@ function Dashboard() {
             console.log("error while fetching user Dashboard : ", err);
           });
       };
-      if (tabSelected === "WatchHistory") handleWatchHistory();
+      if (tabSelected === "watchhistory") handleWatchHistory();
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
-  
+
   return (
     <div className="relative">
       {/* Main Content Section */}
@@ -384,8 +383,7 @@ function Dashboard() {
           >
             <Tab key="videos" title="Videos" />
             <Tab key="playlist" title="Playlist" />
-            {authUser && <Tab key="WatchHistory" title="Watch History" />
-}
+            {authUser && <Tab key="watchhistory" title="Watch History" />}
           </Tabs>
         </div>
 
@@ -483,7 +481,7 @@ function Dashboard() {
               </div>
             )}
 
-            {authUser && tabSelected === "WatchHistory" && (
+            {authUser && tabSelected === "watchhistory" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {watchHistory.length > 0 ? (
                   watchHistory.map((video) => (
