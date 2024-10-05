@@ -285,35 +285,32 @@ function Dashboard() {
     handleCloseVideoModal();
   };
 
-  //watch history
-useEffect(() => {
-  const handleWatchHistory = async () => {
-    setLoading(true); // Start loading state
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay to give more time
 
-      const res = await axios.get(`${baseUrl}/api/v1/users/watch-history`, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-      });
-
-      if (res.data && res.data.data) {
-        console.log(res.data.data); // Log the response for debugging
-        setWatchHistory(res.data.data); // Set the fetched watch history
-      } else {
-        console.log("No watch history data found");
-      }
-    } catch (err) {
-      console.error("Error while fetching user dashboard: ", err);
-    } finally {
-      setLoading(false); // Stop loading state regardless of success or failure
-    }
-  };
-
-  handleWatchHistory(); 
-}, []); 
-
+ //watch history
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const handleWatchHistory = async () => {
+        setLoading(true);
+        await axios
+          .get(`${baseUrl}/api/v1/users/watch-history`, {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
+            },
+          })
+          .then((res) => {
+            console.log(res.data.data);
+            setWatchHistory(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log("error while fetching user Dashboard : ", err);
+          });
+      };
+      if (tabSelected === "WatchHistory") handleWatchHistory();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+  
   return (
     <div className="relative">
       {/* Main Content Section */}
