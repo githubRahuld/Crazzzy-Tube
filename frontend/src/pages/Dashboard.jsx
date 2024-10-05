@@ -380,7 +380,8 @@ function Dashboard() {
           >
             <Tab key="videos" title="Videos" />
             <Tab key="playlist" title="Playlist" />
-            {authUser && <Tab key="WatchHistory" title="watch History" />}
+            {authUser && <Tab key="WatchHistory" title="Watch History" />
+}
           </Tabs>
         </div>
 
