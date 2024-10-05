@@ -285,7 +285,7 @@ function Dashboard() {
     handleCloseVideoModal();
   };
 
-   //watch history
+  //watch history
   useEffect(() => {
     const handleWatchHistory = async () => {
       setLoading(true);
@@ -380,7 +380,7 @@ function Dashboard() {
           >
             <Tab key="videos" title="Videos" />
             <Tab key="playlist" title="Playlist" />
-            {authUser &&   <Tab key="WatchHistory" title="watch History" />}
+            {authUser && <Tab key="WatchHistory" title="watch History" />}
           </Tabs>
         </div>
 
@@ -477,10 +477,11 @@ function Dashboard() {
                 </div>
               </div>
             )}
-             {authUser && tabSelected === "WatchHistory" && (
+
+            {authUser && tabSelected === "WatchHistory" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {WatchHistory.length > 0 ? (
-                  WatchHistory.map((video) => (
+                {watchHistory.length > 0 ? (
+                  watchHistory.map((video) => (
                     <div key={video._id} className="bg-white p-4 rounded-lg">
                       <VideoCard video={video} />
                     </div>
