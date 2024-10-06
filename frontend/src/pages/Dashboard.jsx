@@ -310,7 +310,7 @@ function Dashboard() {
       if (tabSelected === "watchhistory") handleWatchHistory();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [tabSelected]);
+  }, [userId,tabSelected]);
 
 
   return (
@@ -484,18 +484,23 @@ function Dashboard() {
               </div>
             )}
 
-            {authUser && tabSelected === "watchhistory" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {watchHistory.length > 0 ? (
-                  watchHistory.map((video) => (
-                    <div key={video._id} className="bg-white p-4 rounded-lg">
-                      <VideoCard video={video} />
-                    </div>
-                  ))
-                ) : (
-                  <p>No videos in watched history yet.</p>
-                )}
-              </div>
+           {loading ? (
+              <h1>Loading...</h1>
+            ) : (
+              authUser &&
+              tabSelected === "watchhistory" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {watchHistory.length > 0 ? (
+                    watchHistory.map((video) => (
+                      <div key={video._id} className="bg-white p-4 rounded-lg">
+                        <VideoCard video={video} />
+                      </div>
+                    ))
+                  ) : (
+                    <p>No videos in watched history yet.</p>
+                  )}
+                </div>
+              )
             )}
           </div>
         )}
