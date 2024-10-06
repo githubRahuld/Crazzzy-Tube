@@ -287,10 +287,10 @@ function Dashboard() {
 
    //watch history
   useEffect(() => {
-
     const timer = setTimeout(() => {
       const handleWatchHistory = async () => {
-
+            console.log("hi");
+        
         setLoading(true);
         await axios
           .get(`${baseUrl}/api/v1/users/watch-history`, {
@@ -485,7 +485,7 @@ function Dashboard() {
             )}
 
            {loading ? (
-              <h1>Loading...</h1>
+              <Loading/>
             ) : (
               authUser &&
               tabSelected === "watchhistory" && (
