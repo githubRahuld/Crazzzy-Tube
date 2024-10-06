@@ -285,33 +285,32 @@ function Dashboard() {
     handleCloseVideoModal();
   };
 
-  //watch history
- useEffect(() => {
-  if (tabSelected !== "watchhistory") return; // Only proceed if tab is 'watchhistory'
-  
-  const timer = setTimeout(() => {
-    const handleWatchHistory = async () => {
-      setLoading(true); // Start loading
-      try {
-        const res = await axios.get(`${baseUrl}/api/v1/users/watch-history`, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("accessToken")}`,
-          },
-        });
-        console.log(res);
-        setWatchHistory(res.data.data); // Set watch history data
-      } catch (err) {
-        console.log("Error while fetching user Dashboard: ", err);
-      } finally {
-        setLoading(false); // Always set loading to false
-      }
-    };
-    
-    handleWatchHistory(); // Trigger the API call
-  }, 2000); // 2-second delay
-  
-  return () => clearTimeout(timer); // Clean up the timer on component unmount or dependency change
-}, [tabSelected]); // Re-run the effect when 'tabSelected' changes
+   //watch history
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      const handleWatchHistory = async () => {
+
+        setLoading(true);
+        await axios
+          .get(`${baseUrl}/api/v1/users/watch-history`, {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
+            },
+          })
+          .then((res) => {
+            console.log(res.data.data);
+            setWatchHistory(res.data.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log("error while fetching user Dashboard : ", err);
+          });
+      };
+      if (tabSelected === "watchhistory") handleWatchHistory();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [tabSelected]);
 
 
   return (
