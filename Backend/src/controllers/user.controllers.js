@@ -454,8 +454,7 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
                                     $project: {
                                         fullName: 1,
                                         username: 1,
-                                        email: 1,
-                                        avatar:1
+                                        avatar: 1,
                                     },
                                 },
                             ],
@@ -473,11 +472,18 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
         },
     ]);
 
-    console.log("watched history: ", user);
+    if (!user) {
+        throw new ApiError(404, "no watched video found");
+    }
+
     return res
         .status(200)
         .json(
-            new ApiResponse(200, user[0].watchHistory, "watch history fetched")
+            new ApiResponse(
+                200,
+                user[0].watchHistory,
+                "Watch history fetched successfully"
+            )
         );
 });
 
