@@ -39,7 +39,7 @@ const userSchema = Schema(
         refreshToken: {
             type: String,
         },
-        watchHistry: [
+        watchHistory: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "Video",
