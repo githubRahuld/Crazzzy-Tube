@@ -5,7 +5,7 @@ const app = express();
 
 // cors configuration
 const corsOptions = {
-  origin: ["https://crazzzy-tube.vercel.app"],
+  origin: process.env.CORS_ORIGIN || "https://crazzzy-tube.vercel.app",
   credentials: true, 
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], 
   allowedHeaders: ["Content-Type", "Authorization"], 
