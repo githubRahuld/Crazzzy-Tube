@@ -3,16 +3,16 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
-// cors configuration
-const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "https://crazzzy-tube.vercel.app",
-  credentials: true, 
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], 
-  allowedHeaders: ["Content-Type", "Authorization"], 
-};
 
-// Apply CORS to all routes
-app.use(cors(corsOptions));
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN ||  "https://crazzzy-tube.vercel.app",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
+
 
 // Ensure preflight (OPTIONS) requests also use the same CORS settings
 app.options("*", cors(corsOptions));
